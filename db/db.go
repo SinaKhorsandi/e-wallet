@@ -1,5 +1,7 @@
 package db
 
+type Money int64
+
 // PersonalAccount : table for personal customer
 type PersonalAccount struct {
 	UserId int
@@ -17,15 +19,16 @@ type Usertype struct {
 type Wallet struct {
 	WalletId int
 	UserId int
-	Balance int64
+	Balance Money
 }
 
 // Transaction : table for all transaction in wallet
 type Transaction struct {
 	TransactionId int
 	WalletId int
-	Amount int64
+	Amount Money
 	Date int32
+	Status string
 }
 
 // Analytic : table for some data that help to create visual analytics
