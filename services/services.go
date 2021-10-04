@@ -73,27 +73,30 @@ func (s *Service) checkCustomerExist(email string) bool {
 	//return true
 }
 
+//Think how can change accountId to another thing
 func (s *Service) deposit(accountId int, amount db.Money) error {
-	var wallet *db.Wallet
 	if amount <= 0 {
 		return fmt.Errorf("%s\n", NegativeAmount)
 	}
-	_, err := s.checkPersonalAccountById(accountId)
+	wal, err := s.checkPersonalWallet(accountId)
 	if err != nil {
 		fmt.Errorf("%s\n", err)
 	}
-
-	//Check
-	if wallet.UserId == accountId {
-		wallet.Balance += amount
-		return nil
-	}
+	wal.Balance += amount
 	return nil
 }
 func (s *Service) checkPersonalAccountById(accountId int) (*db.PersonalAccount, error) {
 	for _, acc := range s.personalAccounts {
 		if acc.UserId == accountId {
 			return acc, nil
+		}
+	}
+	return nil, fmt.Errorf("%s\n", AccountNotExist)
+}
+func (s *Service) checkPersonalWallet(accountId int) (*db.Wallet, error) {
+	for _, wal := range s.wallets {
+		if wal.UserId == accountId {
+			return wal, nil
 		}
 	}
 	return nil, fmt.Errorf("%s\n", AccountNotExist)
