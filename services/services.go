@@ -74,16 +74,16 @@ func (s *Service) checkCustomerExist(email string) bool {
 }
 
 //Think how can change accountId to another thing
-func (s *Service) deposit(accountId int, amount db.Money) error {
+func (s *Service) deposit(accountId int, amount db.Money) (*db.Wallet, error) {
 	if amount <= 0 {
-		return fmt.Errorf("%s\n", NegativeAmount)
+		return nil, fmt.Errorf("%s\n", NegativeAmount)
 	}
 	wal, err := s.checkPersonalWallet(accountId)
 	if err != nil {
 		fmt.Errorf("%s\n", err)
 	}
 	wal.Balance += amount
-	return nil
+	return wal, nil
 }
 func (s *Service) checkPersonalAccountById(accountId int) (*db.PersonalAccount, error) {
 	for _, acc := range s.personalAccounts {
