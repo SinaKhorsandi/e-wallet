@@ -10,6 +10,9 @@ type PersonalAccount struct {
 }
 // OrganizationAccount : table for organization customer
 type OrganizationAccount struct {
+	OrganizationId int
+	OrganizationName string
+	Email string
 }
 // Usertype : table for both different type of customers
 type Usertype struct {
@@ -19,8 +22,21 @@ type Usertype struct {
 type Wallet struct {
 	WalletId int
 	UserId int
+	OrganizationId int
 	Balance Money
 }
+//Two different type forUserWallet and OrganizationWallet !!!!
+
+//type UserWallet struct {
+//	WalletId int
+//	UserId int
+//	Balance Money
+//}
+//type OrganizationWallet struct {
+//	WalletId int
+//	UserId int
+//	Balance Money
+//}
 
 // Transaction : table for all transaction in wallet
 type Transaction struct {
@@ -36,7 +52,3 @@ type Analytic struct {
 	//Status
 	//Result
 }
-
-//const (
-//	status = 1
-//)
