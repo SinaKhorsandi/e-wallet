@@ -31,8 +31,8 @@ type Service struct {
 	mock.Mock
 }
 
-func (s *Service) userRegister(user *db.PersonalAccount) error {
-	b := s.checkCustomerExist(user.Email)
+func (s *Service) userRegister(userName,email string) error {
+	b := s.checkCustomerExist(email)
 	if b == true {
 		return fmt.Errorf("%s", UserIsExist)
 	}
@@ -40,13 +40,13 @@ func (s *Service) userRegister(user *db.PersonalAccount) error {
 	s.nextWalletId++
 	account := &db.PersonalAccount{
 		UserId:s.nextAccountId   ,
-		UserName: user.UserName,
-		Email:    user.Email,
+		UserName: userName,
+		Email:    email,
 	}
 	// create new function for adding wallet!!!????
 	wallet := &db.Wallet{
 		WalletId: s.nextWalletId,
-		UserId:   user.UserId,
+		UserId:  account.UserId,
 		Balance: 0,
 	}
 	s.personalAccounts = append(s.personalAccounts, account)
