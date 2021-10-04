@@ -80,7 +80,7 @@ func (s *Service) deposit(accountId int, amount db.Money) (*db.Wallet, error) {
 	}
 	wal, err := s.checkPersonalWallet(accountId)
 	if err != nil {
-		fmt.Errorf("%s\n", err)
+		fmt.Printf("%s\n", err)
 	}
 	wal.Balance += amount
 	return wal, nil
