@@ -37,23 +37,26 @@ func (s *Service) userRegister(userName, email string) error {
 		return fmt.Errorf("%s", UserIsExist)
 	}
 	s.nextAccountId++
-	s.nextWalletId++
 	account := &db.PersonalAccount{
 		UserId:   s.nextAccountId,
 		UserName: userName,
 		Email:    email,
 	}
-	// create new function for adding wallet!!!????
-	wallet := &db.Wallet{
-		WalletId: s.nextWalletId,
-		UserId:   account.UserId,
-		Balance:  0,
-	}
+	wallet:=s.newWallet(account.UserId)
 	s.personalAccounts = append(s.personalAccounts, account)
 	s.wallets = append(s.wallets, wallet)
 	return nil
 }
-
+//Error handling !!!!
+func (s *Service) newWallet(accountId int) *db.Wallet {
+	s.nextWalletId++
+	wallet := &db.Wallet{
+		WalletId: s.nextWalletId,
+		UserId:   accountId,
+		Balance:  0,
+	}
+	return wallet
+}
 func (s *Service) organizationRegister() {
 
 }
@@ -111,5 +114,7 @@ func (s *Service) checkPersonalWallet(accountId int) (*db.Wallet, error) {
 //	return true
 //}
 
+
+//Pay : pay function decrease amount of money from an accountId to another accountId
 func pay() {
 }
