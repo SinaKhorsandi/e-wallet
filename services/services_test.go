@@ -33,6 +33,15 @@ func TestCheckPersonalWallet(t *testing.T) {
 	account,_:=s.checkPersonalWallet(1)
 	a.Equal(1,account.WalletId)
 }
+func TestNewWallet(t *testing.T) {
+	a:=assert.New(t)
+	s:=Service{}
+	fWallet:=s.newWallet(1)
+	sWallet:=s.newWallet(2)
+	a.Equal(db.Money(0),fWallet.Balance)
+	a.Equal(1,fWallet.WalletId)
+	a.Equal(2,sWallet.WalletId)
+}
 func TestDeposit(t *testing.T) {
 	a:=assert.New(t)
 	s:=Service{}
