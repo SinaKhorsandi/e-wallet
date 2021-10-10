@@ -2,7 +2,7 @@ package wallet
 
 import (
 	"fmt"
-	"github.com/sinakhorsandi/Go_DataStructuers/hashTable"
+	"github.com/sinakhorsandi/Go_DataStructures/hashTable"
 	"github.com/sinakhorsandi/e-wallet/db"
 )
 
@@ -20,6 +20,8 @@ const (
 
 type Service struct {
 	nextAccountId int
+	hAccount *hashTable.HashTable
+	hWallet *hashTable.HashTable
 
 	//Have nextAccountId and nextOrganizationId both???
 	//nextOrganizationId        int
@@ -28,13 +30,10 @@ type Service struct {
 	organizationAccounts []*db.OrganizationAccount
 	wallets              []*db.Wallet
 	payments             []*db.Transaction
-	detail *hashTable.DataList
-
 }
 
 
-
-func (s *Service) userRegister(userName, email string) error {
+func (s *Service) userRegister(userName, email string) (error,/*hashTable.HashTable*/) {
 	b := s.checkCustomerExist(email)
 	if b == true {
 		return fmt.Errorf("%s", UserIsExist)
@@ -45,13 +44,13 @@ func (s *Service) userRegister(userName, email string) error {
 		UserName: userName,
 		Email:    email,
 	}
+	s.hAccount.Set(email,account.UserId)
+
 	wallet:=s.newWallet(account.UserId)
-	h:=hashTable.NewHash()
-	h=h.Set(email,account.UserId)
-	//s.personalAccounts = append(s.personalAccounts, account)
 	s.wallets = append(s.wallets, wallet)
 	return nil
 }
+
 //Error handling !!!!
 func (s *Service) newWallet(accountId int) *db.Wallet {
 	s.nextWalletId++
@@ -60,17 +59,17 @@ func (s *Service) newWallet(accountId int) *db.Wallet {
 		UserId:   accountId,
 		Balance:  0,
 	}
+	//wh:=hashTable.NewHash()
+	//wh.Set()
 	return wallet
 }
 
 func (s *Service) checkCustomerExist(email string) bool {
-
-	for _, account := range s.personalAccounts {
-		if account.Email == email {
-			return true
-		}
-	}
-	return false
+	//v:=s.hAccount.Get(email)
+	//if v != nil {
+	//	return false
+	//}
+	return true
 }
 
 func (s *Service) organizationRegister() {
