@@ -2,8 +2,8 @@ package wallet
 
 import (
 	"fmt"
+	"github.com/sinakhorsandi/Go_DataStructuers/hashTable"
 	"github.com/sinakhorsandi/e-wallet/db"
-	"github.com/sinakhorsandi/testify/mock"
 )
 
 type Status string
@@ -28,8 +28,11 @@ type Service struct {
 	organizationAccounts []*db.OrganizationAccount
 	wallets              []*db.Wallet
 	payments             []*db.Transaction
-	mock.Mock
+	detail *hashTable.DataList
+
 }
+
+
 
 func (s *Service) userRegister(userName, email string) error {
 	b := s.checkCustomerExist(email)
@@ -43,7 +46,9 @@ func (s *Service) userRegister(userName, email string) error {
 		Email:    email,
 	}
 	wallet:=s.newWallet(account.UserId)
-	s.personalAccounts = append(s.personalAccounts, account)
+	h:=hashTable.NewHash()
+	h=h.Set(email,account.UserId)
+	//s.personalAccounts = append(s.personalAccounts, account)
 	s.wallets = append(s.wallets, wallet)
 	return nil
 }
@@ -57,23 +62,18 @@ func (s *Service) newWallet(accountId int) *db.Wallet {
 	}
 	return wallet
 }
-func (s *Service) organizationRegister() {
-
-}
 
 func (s *Service) checkCustomerExist(email string) bool {
+
 	for _, account := range s.personalAccounts {
 		if account.Email == email {
 			return true
 		}
 	}
 	return false
-	//ret := s.Called(email)
-	//err := ret.Error(0)
-	//if err != nil {
-	//	return false
-	//}
-	//return true
+}
+
+func (s *Service) organizationRegister() {
 }
 
 //Think how can change accountId to another thing
