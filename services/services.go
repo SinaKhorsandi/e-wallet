@@ -26,6 +26,12 @@ type Service struct {
 	wallet        map[int]int
 }
 
+var (
+	acc = make(map[string]int)
+	bal = make(map[int]data.Money)
+	wal = make(map[int]int)
+)
+
 func (s *Service) userRegister(userName, email string) error {
 	b := s.checkCustomerExist(email)
 	if b == true {
@@ -44,14 +50,11 @@ func (s *Service) userRegister(userName, email string) error {
 		UserId:   s.nextAccountId,
 		UserName: userName,
 	}
-	acc := make(map[string]int)
 	acc[EmailID.Email] = EmailID.UserId
 	acc[NameID.UserName] = NameID.UserId
 	s.account = acc
 
 	wallet := s.newWallet(EmailID.UserId)
-	bal := make(map[int]data.Money)
-	wal := make(map[int]int)
 	bal[wallet.WalletId] = wallet.Balance
 	wal[wallet.UserId] = wallet.WalletId
 	s.wallet = wal
@@ -139,4 +142,12 @@ func (s *Service) findWalletID(userID int) (int, error) {
 		return 0, fmt.Errorf("%s\n", AccountNotExist)
 	}
 	return walletID, nil
+}
+
+func deleteAccount() {
+
+}
+//len map
+func (s *Service) countAccount() int{
+	return len(s.account)
 }
