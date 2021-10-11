@@ -19,14 +19,13 @@ const (
 
 type Service struct {
 	nextAccountId int
-	nextWalletId         int
-	nextRecordId	int
-
-	//hAccount *hashTable.HashTable
-	//hWallet *hashTable.HashTable
-	EmailIdAccount     []*data.UserEmail
-	NameIdAccount     []*data.UserName
+	nextWalletId  int
+	nextRecordId  int
+	EmailIdAccount []*data.UserEmail
+	NameIdAccount  []*data.UserName
+	h map[string]int
 }
+
 
 
 func (s *Service) userRegister(userName, email string) error {
@@ -42,40 +41,41 @@ func (s *Service) userRegister(userName, email string) error {
 		Email:    email,
 	}
 	s.nextRecordId++
-	NameID:= &data.UserName{
+	NameID := &data.UserName{
 		RecordId: s.nextRecordId,
 		UserId:   s.nextAccountId,
-		UserName:  userName,
+		UserName: userName,
 	}
-	s.EmailIdAccount=append(s.EmailIdAccount,EmailId)
-	s.NameIdAccount=append(s.NameIdAccount,NameID)
-	//s.emailIDMap[EmailId.Email]=EmailId.UserId
-	//s.emailIDMap[NameID.UserName]=NameID.UserId
+	m := make(map[string]int)
+	m[EmailId.Email]=EmailId.UserId
+	m[NameID.UserName]=NameID.UserId
+	s.h=m
 
-	//s.hAccount.Set(email,EmailId.UserId)
-	//s.hAccount.Set(userName,NameID.UserId)
+	//s.EmailIdAccount = append(s.EmailIdAccount, EmailId)
+	//s.NameIdAccount = append(s.NameIdAccount, NameID)
 
 	//wallet:=s.newWallet(account.UserId)
 	//s.wallets = append(s.wallets, wallet)
 	return nil
 }
+
 //check function output
-func (s *Service) FindEmailByID(userID int) (*data.UserEmail, error) {
-	for _, user := range s.EmailIdAccount {
-		if user.UserId == userID {
-			return user, nil
-		}
+func (s *Service) findIDByEmail(email string) (int, error) {
+	v ,ok:= s.h[email]
+	if !ok {
+		return 0,fmt.Errorf("%s\n",AccountNotExist)
 	}
-	return nil, fmt.Errorf("%s\n",AccountNotExist)
+	return v, nil
 }
-func (s *Service) FindNameByID(userID int) (*data.UserName, error) {
+func (s *Service) findNameByID(userID int) (*data.UserName, error) {
 	for _, user := range s.NameIdAccount {
 		if user.UserId == userID {
 			return user, nil
 		}
 	}
-	return nil, fmt.Errorf("%s\n",AccountNotExist)
+	return nil, fmt.Errorf("%s\n", AccountNotExist)
 }
+
 //Error handling !!!!
 func (s *Service) newWallet(accountId int) *data.Wallet {
 	s.nextWalletId++
@@ -84,8 +84,6 @@ func (s *Service) newWallet(accountId int) *data.Wallet {
 		UserId:   accountId,
 		Balance:  0,
 	}
-	//wh:=hashTable.NewHash()
-	//wh.Set()
 	return wallet
 }
 
@@ -96,6 +94,7 @@ func (s *Service) checkCustomerExist(email string) bool {
 	//}
 	return false
 }
+
 //
 //func (s *Service) organizationRegister() {
 //}
