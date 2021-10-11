@@ -21,14 +21,11 @@ type Service struct {
 	nextAccountId int
 	nextWalletId         int
 	nextRecordId	int
-	emailIDMap map[string]int
-	nameIDMap map[string]int
+
 	//hAccount *hashTable.HashTable
 	//hWallet *hashTable.HashTable
 	EmailIdAccount     []*data.UserEmail
 	NameIdAccount     []*data.UserName
-	//wallets              []*data.Wallet
-	//payments             []*data.Transaction
 }
 
 
@@ -71,7 +68,14 @@ func (s *Service) FindEmailByID(userID int) (*data.UserEmail, error) {
 	}
 	return nil, fmt.Errorf("%s\n",AccountNotExist)
 }
-
+func (s *Service) FindNameByID(userID int) (*data.UserName, error) {
+	for _, user := range s.NameIdAccount {
+		if user.UserId == userID {
+			return user, nil
+		}
+	}
+	return nil, fmt.Errorf("%s\n",AccountNotExist)
+}
 //Error handling !!!!
 func (s *Service) newWallet(accountId int) *data.Wallet {
 	s.nextWalletId++
