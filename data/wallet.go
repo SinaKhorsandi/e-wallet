@@ -1,4 +1,4 @@
-package db
+package data
 
 //check
 // Wallet : main table for user wallet

@@ -1,4 +1,4 @@
-package db
+package data
 
 type username struct {
 	RecordId int

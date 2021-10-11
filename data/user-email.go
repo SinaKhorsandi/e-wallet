@@ -1,4 +1,4 @@
-package db
+package data
 type UserEmail struct {
 	RecordId int
 	UserId   int
