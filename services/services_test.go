@@ -16,9 +16,9 @@ func TestCheckCustomerExist(t *testing.T) {
 func TestUserRegistration(t *testing.T) {
 	s:=Service{}
 	s.userRegister("sina","sinakhorsandi@gmail.com")
-	account,_:=s.FindEmailByID(1)
+	account,_:=s.findIDByEmail("sinakhorsandi@gmail.com")
 	a:=assert.New(t)
-	a.Equal("sinakhorsandi@gmail.com",account.Email)
+	a.Equal(1,account)
 }
 //func TestCheckPersonalAccountById(t *testing.T) {
 //	a:=assert.New(t)
