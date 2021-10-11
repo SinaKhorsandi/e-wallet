@@ -21,18 +21,17 @@ type Service struct {
 	nextAccountId int
 	nextWalletId  int
 	nextRecordId  int
-	EmailIdAccount []*data.UserEmail
-	NameIdAccount  []*data.UserName
-	h map[string]int
+	account map[string]int
+	wallet  map[int]data.Money
 }
 
 
 
 func (s *Service) userRegister(userName, email string) error {
-	//b := s.checkCustomerExist(email)
-	//if b == true {
-	//	return fmt.Errorf("%s", UserIsExist)
-	//}
+	b := s.checkCustomerExist(email)
+	if b == true {
+		return fmt.Errorf("%s", UserIsExist)
+	}
 	s.nextAccountId++
 	s.nextRecordId++
 	EmailId := &data.UserEmail{
@@ -49,33 +48,21 @@ func (s *Service) userRegister(userName, email string) error {
 	m := make(map[string]int)
 	m[EmailId.Email]=EmailId.UserId
 	m[NameID.UserName]=NameID.UserId
-	s.h=m
+	s.account=m
 
-	//s.EmailIdAccount = append(s.EmailIdAccount, EmailId)
-	//s.NameIdAccount = append(s.NameIdAccount, NameID)
-
-	//wallet:=s.newWallet(account.UserId)
-	//s.wallets = append(s.wallets, wallet)
+	wall:=s.newWallet(EmailId.UserId)
+	w:= make(map[int]data.Money)
+	w[wall.WalletId]=wall.Balance
+	s.wallet=w
 	return nil
 }
-
-//check function output
-func (s *Service) findIDByEmail(email string) (int, error) {
-	v ,ok:= s.h[email]
+func (s *Service) checkCustomerExist(email string) bool {
+	_,ok:=s.account[email]
 	if !ok {
-		return 0,fmt.Errorf("%s\n",AccountNotExist)
+		return false
 	}
-	return v, nil
+	return true
 }
-func (s *Service) findNameByID(userID int) (*data.UserName, error) {
-	for _, user := range s.NameIdAccount {
-		if user.UserId == userID {
-			return user, nil
-		}
-	}
-	return nil, fmt.Errorf("%s\n", AccountNotExist)
-}
-
 //Error handling !!!!
 func (s *Service) newWallet(accountId int) *data.Wallet {
 	s.nextWalletId++
@@ -86,19 +73,38 @@ func (s *Service) newWallet(accountId int) *data.Wallet {
 	}
 	return wallet
 }
-
-func (s *Service) checkCustomerExist(email string) bool {
-	//v:=s.hAccount.Get(email)
-	//if v != nil {
-	//	return true
-	//}
-	return false
+//check function output
+func (s *Service) findIDByEmail(email string) (int, error) {
+	v ,ok:= s.account[email]
+	if !ok {
+		return 0,fmt.Errorf("%s\n",AccountNotExist)
+	}
+	return v, nil
+}
+func (s *Service) findIDByName(userName string) (int, error) {
+	v ,ok:= s.account[userName]
+	if !ok {
+		return 0,fmt.Errorf("%s\n",AccountNotExist)
+	}
+	return v, nil
 }
 
-//
-//func (s *Service) organizationRegister() {
+//check output
+func (s *Service) getBalance(userID int) (data.Money,error) {
+balance,ok:=s.wallet[userID]
+	if !ok {
+
+		//check
+		return 0,fmt.Errorf("%s\n",AccountNotExist)
+	}
+	return balance, nil
+}
+
+//func showBalance()  {
 //}
-//
+
+
+
 ////Think how can change accountId to another thing
 //func (s *Service) deposit(accountId int, amount data.Money) (*data.Wallet, error) {
 //	if amount <= 0 {
