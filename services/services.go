@@ -112,12 +112,17 @@ func (s *Service) findIDByName(userName string) (int, error) {
 //func showBalance()  {
 //}
 
-//func findUserIDByWalletID(walletID int) (int, error) {
-//
-//}
+func findUserIDByWalletID(walletID int) (int, error) {
+	for key, value := range wal {
+		if value == walletID  {
+			return key, nil
+		}
+	}
+	return 0, fmt.Errorf("%s\n",AccountNotExist)
+}
 
 //Think how can change accountId to another thing
-func (s *Service) deposit(userID int,walletID int, amount data.Money) (*data.Wallet, error) {
+func (s *Service) deposit(walletID int, amount data.Money) (*data.Wallet, error) {
 	if amount <= data.Money(0) {
 		return nil, fmt.Errorf("%s\n", NegativeAmount)
 	}
@@ -125,6 +130,10 @@ func (s *Service) deposit(userID int,walletID int, amount data.Money) (*data.Wal
 	wallet, err := s.getWallet(walletID)
 	if err != nil {
 		fmt.Printf("%s\n", AccountNotExist)
+	}
+	userID,err:=findUserIDByWalletID(walletID)
+	if err != nil {
+		fmt.Errorf("%s\n",err)
 	}
 	newBalance:=wallet.Balance + amount
 	newWallet:=updateWallet(userID,walletID,newBalance)
@@ -163,10 +172,16 @@ func (s *Service) findWalletID(userID int) (int, error) {
 	return walletID, nil
 }
 
-func deleteAccount() {
-
+func (s *Service) deleteAccount(email string) error {
+userID,ok:=s.account[email]
+	if ok {
+		delete(s.wallet,userID)
+		delete(s.balance,userID)
+		delete(s.account,email)
+	}
+	return fmt.Errorf("%s\n",AccountNotExist)
 }
-////len map
-//func (s *Service) countAccount() int{
-//	return len(s.wallet)
-//}
+
+func (s *Service) countAccount() int{
+	return len(s.wallet)
+}
