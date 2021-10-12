@@ -60,14 +60,13 @@ func TestGetWallet(t *testing.T) {
 	}
 }
 
-
 func TestDeposit(t *testing.T) {
 	a:=assert.New(t)
 	s:=Service{}
 	s.userRegister("sina","sinakhorsandi@gmail.com")
 	userID,_:=s.findIDByName("sina")
 	walletID,_:=s.findWalletID(userID)
-	wal,_:=s.deposit(userID,walletID, data.Money(1000000))
+	wal,_:=s.deposit(walletID, data.Money(1000000))
 	a.Equal(data.Money(1000000),wal.Balance)
 }
 
@@ -108,3 +107,13 @@ func TestFindIDByName(t *testing.T) {
 	a.Equal(2,id)
 }
 
+func TestDeleteAccount(t *testing.T) {
+	a:=assert.New(t)
+	s:=Service{}
+	s.userRegister("sina1","sinakhorsandi@gmail.com")
+	s.userRegister("sina2","eng.sinakhorsandi@gmail.com")
+	s.userRegister("sina3","sina76khorsandi@gmail.com")
+	s.deleteAccount("sinakhorsandi@gmail.com")
+	count:=s.countAccount()
+	a.Equal(2,count)
+}
