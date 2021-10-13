@@ -1,11 +1,15 @@
 package data
 
-type username struct {
+type UserName struct {
 	RecordId int
 	UserId   int
 	UserName string
 
 }
 //pointer
-//func GetUserEmail(userId int) *username {
+//func GetUserNameByUserID(userId int) UserName {
+//
+//}
+//func GetUserUserIDByUsername(userId int) UserName {
+//
 //}
